@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "identifier": "com.francollamas.argentum",
   "build": {
-    "beforeDevCommand": "npm dev",
+    "beforeDevCommand": "pnpm dev",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "npm build",
+    "beforeBuildCommand": "pnpm build",
     "frontendDist": "../dist"
   },
   "app": {
