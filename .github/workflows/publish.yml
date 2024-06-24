@@ -110,11 +110,8 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - uses: nttld/setup-ndk@v1
-        id: setup-ndk
-        with:
-          ndk-version: r26d
-          link-to-sdk: true
+      - name: Install NDK
+        run: sdkmanager "ndk;27.0.11902837"
 
       - name: setup node
         uses: actions/setup-node@v4
@@ -129,10 +126,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - run: echo $NDK_HOME
+        env:
+          NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/27.0.11902837
+
       - name: Build app bundle
         run: pnpm tauri android build -v
         env:
-          NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/27.0.11902837
 
       - name: Extract android signing key from env
         run: |
