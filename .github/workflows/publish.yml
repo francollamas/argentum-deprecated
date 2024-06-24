@@ -130,7 +130,7 @@ jobs:
         run: pnpm install
 
       - name: Build app bundle
-        run: pnpm tauri android build
+        run: pnpm tauri android build -v
         env:
           NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
 
