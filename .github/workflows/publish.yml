@@ -125,7 +125,7 @@ jobs:
           link-to-sdk: true
         env:
           NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-        run: pnpm tauri android build
+      - run: pnpm tauri android build
 
       - name: Extract android signing key from env
         run: |
