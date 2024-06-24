@@ -92,6 +92,9 @@ jobs:
   publish-android:
     runs-on: ubuntu-22.04
     #needs: draft
+    env:
+      ANDROID_HOME: /root/.android/sdk
+      NDK_HOME: /root/.android/sdk/ndk
     permissions:
       contents: write
     steps:
@@ -107,13 +110,10 @@ jobs:
           distribution: "zulu"
           java-version: "17"
 
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
-      with:
-        packages: 'tools platform-tools ndk'
-      env:
-        ANDROID_HOME: /root/.android/sdk
-        NDK_HOME: /root/.android/sdk/ndk
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: "tools platform-tools ndk"
 
       - name: setup node
         uses: actions/setup-node@v4
