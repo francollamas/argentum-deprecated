@@ -120,6 +120,9 @@ jobs:
         env:
           NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
 
+      - run: echo $ANDROID_HOME
+      - run: echo $NDK_HOME
+
       - name: setup node
         uses: actions/setup-node@v4
         with:
