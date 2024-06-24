@@ -90,7 +90,7 @@ jobs:
   #         args: ${{ matrix.args }}
 
   publish-android:
-    runs-on: ubuntu-22.04
+    runs-on: windows-latest
     #needs: draft
     permissions:
       contents: write
