@@ -94,7 +94,7 @@ jobs:
     #needs: draft
     env:
       ANDROID_HOME: /root/.android/sdk
-      NDK_HOME: /root/.android/sdk/ndk
+      NDK_HOME: /root/.android/sdk/ndk/23.0.7599858
     permissions:
       contents: write
     steps:
@@ -113,7 +113,6 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
       - run: sdkmanager "ndk;23.0.7599858"
-      - run: ls /root/.android/sdk/ndk
 
       - name: setup node
         uses: actions/setup-node@v4
