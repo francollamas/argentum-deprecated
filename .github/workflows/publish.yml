@@ -115,18 +115,16 @@ jobs:
         with:
           ndk-version: r26d
           link-to-sdk: true
-        env:
-          NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-
-      - run: echo $ANDROID_HOME
-      - run: echo $NDK_HOME
-        env:
-          NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
 
       - name: setup node
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
+
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android
 
       - name: Install dependencies
         run: pnpm install
