@@ -124,7 +124,7 @@ jobs:
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: aarch64-linux-android
+          targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
 
       - name: Install dependencies
         run: pnpm install
@@ -142,7 +142,7 @@ jobs:
       - name: Sign AAB and APK
         run: |
           jarsigner -keystore src-tauri/gen/android/release.decrypted.jks -storepass "${{ secrets.RELEASE_KEYSTORE_PASSWORD }}" -signedjar ./src-tauri/gen/android/app/build/outputs/bundle/universalRelease/app-universal-release-signed.aab ./src-tauri/gen/android/app/build/outputs/bundle/universalRelease/app-universal-release.aab release
-          jarsigner -keystore src-tauri/gen/android/release.decrypted.jks -storepass "${{ secrets.RELEASE_KEYSTORE_PASSWORD }}" -signedjar ./src-tauri/gen/android/app/build/outputs/apk/universal/release/app-release-signed.apk ./src-tauri/gen/android/app/build/outputs/apk/universal/release/app-release-unsigned.apk release
+          jarsigner -keystore src-tauri/gen/android/release.decrypted.jks -storepass "${{ secrets.RELEASE_KEYSTORE_PASSWORD }}" -signedjar ./src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-signed.apk ./src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk release
 
       - name: Get Node project version
         id: package-version
@@ -151,7 +151,7 @@ jobs:
       - name: Rename files
         run: |
           mv ./src-tauri/gen/android/app/build/outputs/bundle/universalRelease/app-universal-release-signed.aab ./src-tauri/gen/android/app/build/outputs/bundle/universalRelease/argentum-${{ steps.package-version.outputs.current-version}}.aab
-          mv ./src-tauri/gen/android/app/build/outputs/apk/universal/release/app-release-signed.apk ./src-tauri/gen/android/app/build/outputs/apk/universal/release/argentum-${{ steps.package-version.outputs.current-version}}.apk
+          mv ./src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-signed.apk ./src-tauri/gen/android/app/build/outputs/apk/universal/release/argentum-${{ steps.package-version.outputs.current-version}}.apk
 
       - name: Publish
         uses: softprops/action-gh-release@v1
