@@ -109,6 +109,16 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        env:
+          ANDROID_HOME: /root/.android/sdk
+
+      - uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r26d
+          link-to-sdk: true
+        env:
+          NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
 
       - name: setup node
         uses: actions/setup-node@v4
