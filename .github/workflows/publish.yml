@@ -9,33 +9,39 @@ on:
   workflow_dispatch:
 
 jobs:
-  publish-desktop:
-    permissions:
-      contents: write
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: macos-arm64
-            platform: "macos-latest" # for Arm based macs (M1 and above).
-            args: "--target aarch64-apple-darwin"
-          - name: macos-x64
-            platform: "macos-latest" # for Intel based macs.
-            args: "--target x86_64-apple-darwin"
-          - name: linux-x64
-            platform: "ubuntu-22.04"
-            args: "--target x86_64-unknown-linux-gnu"
-          - name: windows-x64
-            platform: "windows-latest"
-            args: ""
+  draft:
+    name: Draft a release
+    runs-on: ubuntu-latest
+    steps:
+          uses: actions/checkout@v4
 
-    runs-on: ${{ matrix.platform }}
+        - name: Get Node project version
+          id: package-version
+          uses: martinbeentjes/npm-get-version-action@v1.3.1
+
+        - name: Draft
+          uses: softprops/action-gh-release@v2
+          with:
+              draft: true
+              name: App v${{ steps.package-version.outputs.current-version}}
+              tag_name: v${{ steps.package-version.outputs.current-version}}
+              generate_release_notes: true
+
+  publish-android:
+    runs-on: ubuntu-22.04
+    needs: draft
     steps:
       - uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
         with:
           version: 8
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+            distribution: 'zulu'
+            java-version: '17'
 
       - name: setup node
         uses: actions/setup-node@v4
@@ -44,26 +50,39 @@ jobs:
 
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
-        with:
-          # Those targets are only used on macos runners so it's in an `if` to slightly speed up windows and linux builds.
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
-      - name: install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-22.04' # This must match the platform value defined above.
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build app bundle
+        run: pnpm tauri android build
+
+      - name: Extract android signing key from env
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+            echo "${{ secrets.RELEASE_KEYSTORE }}" > src-tauri/gen/android/release.jks.base64
+            base64 -d src-tauri/gen/android/release.jks.base64 > src-tauri/gen/android/release.decrypted.jks
 
-      - name: install frontend dependencies
-        run: pnpm install # change this to npm, pnpm or bun depending on which one you use.
+      - name: Sign AAB and APK
+        run: |
+            jarsigner -keystore src-tauri/gen/android/release.decrypted.jks -storepass "${{ secrets.RELEASE_KEYSTORE_PASSWORD }}" -signedjar ./src-tauri/gen/android/app/build/outputs/bundle/universalRelease/app-universal-release-signed.aab ./src-tauri/gen/android/app/build/outputs/bundle/universalRelease/app-universal-release.aab release
+            jarsigner -keystore src-tauri/gen/android/release.decrypted.jks -storepass "${{ secrets.RELEASE_KEYSTORE_PASSWORD }}" -signedjar ./src-tauri/gen/android/app/build/outputs/apk/universal/release/app-release-signed.apk ./src-tauri/gen/android/app/build/outputs/apk/universal/release/app-release-unsigned.apk release
 
-      - uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get Node project version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+
+      - name: Rename files
+        run: |
+            mv ./src-tauri/gen/android/app/build/outputs/bundle/universalRelease/app-universal-release-signed.aab ./src-tauri/gen/android/app/build/outputs/bundle/universalRelease/argentum-${{ steps.package-version.outputs.current-version}}.aab
+            mv ./src-tauri/gen/android/app/build/outputs/apk/universal/release/app-release-signed.apk ./src-tauri/gen/android/app/build/outputs/apk/universal/release/argentum-${{ steps.package-version.outputs.current-version}}.apk
+
+      - name: Publish
+        uses: softprops/action-gh-release@v1
         with:
-          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
-          releaseName: "App v__VERSION__"
-          releaseBody: "See the assets to download this version and install."
-          releaseDraft: true
-          prerelease: false
-          args: ${{ matrix.args }}
+            draft: true
+            name: App v${{ steps.package-version.outputs.current-version}}
+            tag_name: v${{ steps.package-version.outputs.current-version}}
+            generate_release_notes: true
+            files: |
+                ./src-tauri/gen/android/app/build/outputs/bundle/universalRelease/argentum-${{ steps.package-version.outputs.current-version}}.aab
+                ./src-tauri/gen/android/app/build/outputs/apk/universal/release/argentum-${{ steps.package-version.outputs.current-version}}.apk
