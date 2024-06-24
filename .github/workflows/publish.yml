@@ -112,8 +112,7 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
-        with:
-          packages: "tools platform-tools ndk"
+      - run: sdkmanager "ndk;23.0.7599858"
 
       - name: setup node
         uses: actions/setup-node@v4
