@@ -12,6 +12,8 @@ jobs:
   draft:
     name: Draft a release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -30,6 +32,8 @@ jobs:
   publish-android:
     runs-on: ubuntu-22.04
     needs: draft
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
