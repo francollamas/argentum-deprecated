@@ -109,8 +109,6 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
-        env:
-          ANDROID_HOME: /root/.android/sdk
 
       - uses: nttld/setup-ndk@v1
         id: setup-ndk
