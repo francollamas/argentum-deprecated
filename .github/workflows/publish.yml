@@ -120,18 +120,6 @@ jobs:
         with:
           node-version: lts/*
 
-      - uses: nttld/setup-ndk@v1
-        id: setup-ndk
-        with:
-          ndk-version: r26d
-          link-to-sdk: true
-        env:
-          NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-
-      - name: install Rust stable
-        uses: dtolnay/rust-toolchain@stable
-
-
       - name: Install dependencies
         run: pnpm install
 
