@@ -110,16 +110,6 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-
-
-      - uses: nttld/setup-ndk@v1
-          id: setup-ndk
-          with:
-            ndk-version: r26d
-            link-to-sdk: true
-
-
-
       - name: setup node
         uses: actions/setup-node@v4
         with:
