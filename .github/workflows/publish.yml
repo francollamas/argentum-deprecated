@@ -113,6 +113,7 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
       - run: sdkmanager "ndk;23.0.7599858"
+      - run: ls /root/.android/sdk/ndk
 
       - name: setup node
         uses: actions/setup-node@v4
