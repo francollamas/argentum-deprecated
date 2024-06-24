@@ -133,6 +133,8 @@ jobs:
 
       - name: Build app bundle
         run: pnpm tauri android build
+        env:
+          NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
 
       - name: Extract android signing key from env
         run: |
