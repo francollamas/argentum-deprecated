@@ -1,5 +1,5 @@
 {
-  "name": "argentum-online",
+  "name": "argentum",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -27,9 +27,8 @@
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.2.1",
-    "@vitest/coverage-v8": "^1.1.0",
     "typescript": "^5.4.5",
-    "vite": "^5.2.11",
+    "vite": "^5.3.1",
     "vitest": "^1.6.0",
     "@tauri-apps/cli": ">=2.0.0-beta.0",
     "internal-ip": "^7.0.0"

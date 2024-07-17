@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    argentum_online_lib::run()
+    argentum_lib::run()
 }
