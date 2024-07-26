@@ -130,20 +130,32 @@ jobs:
         env:
           NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/27.0.11902837
 
-      - name: Build app bundle
-        run: pnpm tauri android build -v
-        env:
-          NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/27.0.11902837
+    #  - name: Build app bundle
+    #    run: pnpm tauri android build -v
+    #    env:
+    #      NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/27.0.11902837
 
       - name: Extract android signing key from env
         run: |
-          echo "${{ secrets.RELEASE_KEYSTORE }}" > src-tauri/gen/android/release.jks.base64
+          echo "${{ secrets.ANDROID_RELEASE_KEYSTORE }}" > src-tauri/gen/android/release.jks.base64
           base64 -d src-tauri/gen/android/release.jks.base64 > src-tauri/gen/android/release.decrypted.jks
 
       - name: Sign AAB and APK
         run: |
-          jarsigner -keystore src-tauri/gen/android/release.decrypted.jks -storepass "${{ secrets.RELEASE_KEYSTORE_PASSWORD }}" -signedjar ./src-tauri/gen/android/app/build/outputs/bundle/universalRelease/app-universal-release-signed.aab ./src-tauri/gen/android/app/build/outputs/bundle/universalRelease/app-universal-release.aab release
-          jarsigner -keystore src-tauri/gen/android/release.decrypted.jks -storepass "${{ secrets.RELEASE_KEYSTORE_PASSWORD }}" -signedjar ./src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-signed.apk ./src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk release
+          apksigner sign --ks src-tauri/gen/android/release.decrypted.jks \
+            --ks-key-alias ${{ secrets.ANDROID_RELEASE_KEY }} \
+            --ks-pass pass:${{ secrets.ANDROID_RELEASE_PASSWORD }} \
+            --key-pass pass:${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }} \
+            --out src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-signed.apk \
+            src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk
+          apksigner sign --ks src-tauri/gen/android/release.decrypted.jks \
+            --ks-key-alias ${{ secrets.ANDROID_RELEASE_KEY }} \
+            --ks-pass pass:${{ secrets.ANDROID_RELEASE_PASSWORD }} \
+            --key-pass pass:${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }} \
+            --out src-tauri/gen/android/app/build/outputs/bundle/universalRelease/app-universal-release-signed.aab \
+            src-tauri/gen/android/app/build/outputs/bundle/universalRelease/app-universal-release.aab
+          
+          
 
       - name: Get Node project version
         id: package-version
