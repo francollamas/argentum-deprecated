@@ -131,7 +131,7 @@ jobs:
     #    env:
     #      NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/27.0.11902837
 
-      - run: ls ${{ env.ANDROID_HOME }}/build-tools/35.0.0
+      - run: ls ${{ env.ANDROID_HOME }}/platform-tools
 
     #  - name: Build app bundle
     #    run: pnpm tauri android build -v
