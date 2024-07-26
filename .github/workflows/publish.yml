@@ -131,7 +131,7 @@ jobs:
     #    env:
     #      NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/27.0.11902837
 
-      - run: ls ${{ env.ANDROID_HOME }}/build-tools
+      - run: ls ${{ env.ANDROID_HOME }}/build-tools/35.0.0
 
     #  - name: Build app bundle
     #    run: pnpm tauri android build -v
@@ -143,7 +143,17 @@ jobs:
           echo "${{ secrets.ANDROID_RELEASE_KEYSTORE }}" > src-tauri/gen/android/release.jks.base64
           base64 -d src-tauri/gen/android/release.jks.base64 > src-tauri/gen/android/release.decrypted.jks
 
-      - name: Sign AAB and APK
+      - name: Sign AAB
+        run: |
+          apksigner sign --ks src-tauri/gen/android/release.decrypted.jks \
+            --ks-key-alias ${{ secrets.ANDROID_RELEASE_KEY }} \
+            --ks-pass pass:${{ secrets.ANDROID_RELEASE_PASSWORD }} \
+            --key-pass pass:${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }} \
+            --out src-tauri/gen/android/app/build/outputs/bundle/universalRelease/app-universal-release-signed.aab \
+            src-tauri/gen/android/app/build/outputs/bundle/universalRelease/app-universal-release.aab
+        working-directory: ${{ env.ANDROID_HOME }}/build-tools/35.0.0
+
+      - name: Sign APK
         run: |
           apksigner sign --ks src-tauri/gen/android/release.decrypted.jks \
             --ks-key-alias ${{ secrets.ANDROID_RELEASE_KEY }} \
@@ -151,14 +161,7 @@ jobs:
             --key-pass pass:${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }} \
             --out src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-signed.apk \
             src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk
-          apksigner sign --ks src-tauri/gen/android/release.decrypted.jks \
-            --ks-key-alias ${{ secrets.ANDROID_RELEASE_KEY }} \
-            --ks-pass pass:${{ secrets.ANDROID_RELEASE_PASSWORD }} \
-            --key-pass pass:${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }} \
-            --out src-tauri/gen/android/app/build/outputs/bundle/universalRelease/app-universal-release-signed.aab \
-            src-tauri/gen/android/app/build/outputs/bundle/universalRelease/app-universal-release.aab
-          
-          
+        working-directory: ${{ env.ANDROID_HOME }}/build-tools/35.0.0    
 
       - name: Get Node project version
         id: package-version
