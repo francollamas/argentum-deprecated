@@ -37,23 +37,11 @@ export const Example = () => {
 
   return (
     <Container>
-      <Filters blur={{ blur: 5 }}>
         <Sprite
           image={users.length % 2 == 0 ? gold : clothes}
           eventMode="static"
           pointerdown={handleAddUser}
         />
-
-        {ress && (
-          <SpineComponent
-            resource={ress}
-            x={200}
-            y={200}
-            scale={0.25}
-            timeScale={1}
-          />
-        )}
-      </Filters>
     </Container>
   );
 };
