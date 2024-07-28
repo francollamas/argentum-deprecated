@@ -1,20 +1,20 @@
-import { Container } from '@pixi/react'
+import { useExtend } from '@pixi/react'
+import { Container } from 'pixi.js'
 import { Example } from './Example'
-import { Stage } from './Stage'
+import { Application } from './Application'
 
 const App = () => {
+    useExtend({ Container })
+
     return (
-        <>
-            <Stage
-                width={800}
-                height={600}
-                options={{ backgroundColor: 0x000000 }}
+            <Application
+                backgroundColor={0x000000}
             >
-                <Container x={150} y={150}>
+                <container x={150} y={150}>
                     <Example />
-                </Container>
-            </Stage>
-        </>
+                </container>
+            </Application>
+
     )
 }
 
