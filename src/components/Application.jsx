@@ -5,10 +5,10 @@ import { ReactReduxContext } from 'react-redux'
 // cambiar los "any" por tipos especificos
 // ver si hay forma de evitar tener codigo ilegible por tener tantos providers anidados.
 
-export const ContextBridge = ({ children, Context, render }: any) => {
+export const ContextBridge = ({ children, Context, render }) => {
     return (
         <Context.Consumer>
-            {(value: any) =>
+            {(value) =>
                 render(
                     <Context.Provider value={value}>
                         {children}
@@ -19,11 +19,11 @@ export const ContextBridge = ({ children, Context, render }: any) => {
     )
 }
 
-export const Application = ({ children, ...props }: any) => {
+export const Application = ({ children, ...props }) => {
     return (
         <ContextBridge
             Context={ReactReduxContext}
-            render={(children: any) => (
+            render={(children) => (
                 <PixiApplication {...props}>{children}</PixiApplication>
             )}
         >
