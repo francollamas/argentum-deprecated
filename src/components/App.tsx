@@ -1,18 +1,20 @@
-import { Container } from '@pixi/react'
+import { extend } from '@pixi/react'
 import { Example } from './Example'
-import { Stage } from './Stage'
+import { Application } from './Application'
+import { Container } from 'pixi.js'
+
+extend({ Container })
 
 const App = () => {
     return (
-        <Stage
-            width={800}
-            height={600}
-            options={{ backgroundColor: 0x000000 }}
+        <Application
+            attachToDevtools
+            backgroundColor={0x000000}
         >
-            <Container x={150} y={150}>
+            <container x={150} y={150}>
                 <Example />
-            </Container>
-        </Stage>
+            </container>
+        </Application>
     )
 }
 

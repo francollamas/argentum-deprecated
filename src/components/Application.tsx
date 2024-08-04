@@ -1,4 +1,4 @@
-import { Stage as PixiStage } from '@pixi/react'
+import { Application as PixiApplication } from '@pixi/react'
 import { ReactReduxContext } from 'react-redux'
 
 // TODO: este file tiene oportunidad de mejora:
@@ -19,12 +19,12 @@ export const ContextBridge = ({ children, Context, render }: any) => {
     )
 }
 
-export const Stage = ({ children, ...props }: any) => {
+export const Application = ({ children, ...props }: any) => {
     return (
         <ContextBridge
             Context={ReactReduxContext}
             render={(children: any) => (
-                <PixiStage {...props}>{children}</PixiStage>
+                <PixiApplication {...props}>{children}</PixiApplication>
             )}
         >
             {children}
